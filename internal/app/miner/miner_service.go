@@ -6,17 +6,27 @@ import (
 )
 
 type minerService struct {
-	adapters []port.LiveChatServicePort
+	adapters map[string]port.LiveChatServicePort
 }
 
 func NewMinerService(adapters ...port.LiveChatServicePort) Miner {
+
+	adapterMap := make(map[string]port.LiveChatServicePort)
+
+	for _, adapter := range adapters {
+		adapterMap[adapter.GetPlatformName()] = adapter
+	}
+
 	return &minerService{
-		adapters: adapters,
+		adapters: adapterMap,
 	}
 }
 
-func (m minerService) FetchAndStoreMessages(channelId string) error {
+func (m minerService) FetchAndStoreMessages(platformName string, channelId string) error {
 	for _, adapter := range m.adapters {
+		if adapter.GetPlatformName() == platformName {
+
+		}
 		messages, err := adapter.FetchHistoricalMessages(channelId)
 		if err != nil {
 			return err
@@ -34,12 +44,11 @@ func (m minerService) FetchAndStoreMessages(channelId string) error {
 	return nil
 }
 
-func (m minerService) StreamLiveMessages(channelId string) {
-	//TODO implement me
-	panic("implement me")
+func (m minerService) StreamLiveMessages(platformName string, channelId string) {
+	m.adapters[platformName].StreamLiveMessages(channelId)
 }
 
-func (m minerService) StopStreaming(channelId string) {
+func (m minerService) StopStreaming(platformName string, channelId string) {
 	//TODO implement me
 	panic("implement me")
 }

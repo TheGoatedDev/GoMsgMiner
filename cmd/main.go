@@ -3,21 +3,26 @@ package main
 import (
 	"GoMsgMiner/internal/adapter/outbound"
 	"GoMsgMiner/internal/app/miner"
-	"log"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
-	// Initialize the MockChatAdapter
-	mockAdapter := outbound.NewMockChatAdapter()
-	mock2Adapter := outbound.NewMockChat2Adapter()
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 
-	// Initialize the miner service with the MockChatAdapter
-	minerService := miner.NewMinerService(mockAdapter, mock2Adapter)
+	// Initialize the TwitchChatAdapter
+	twitchAdapter := outbound.NewTwitchChatAdapter()
 
-	// Fetch and print historical messages
-	err := minerService.FetchAndStoreMessages("test_channel")
-	if err != nil {
-		log.Fatalf("could not fetch and store messages: %v", err)
-	}
+	// Initialize the miner service with the TwitchChatAdapter
+	minerService := miner.NewMinerService(twitchAdapter)
 
+	minerService.StreamLiveMessages("Twitch", "Sweet_Anita")
+
+	minerService.StreamLiveMessages("Twitch", "vedal987")
+
+	minerService.StreamLiveMessages("Twitch", "Emiru")
+
+	<-stop
 }
