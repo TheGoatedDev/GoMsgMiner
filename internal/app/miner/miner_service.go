@@ -25,19 +25,18 @@ func NewMinerService(adapters ...port.LiveChatServicePort) Miner {
 
 func (m minerService) FetchAndStoreMessages(platformName string, channelId string) error {
 	for _, adapter := range m.adapters {
-		if adapter.GetPlatformName() == platformName {
+		if false {
+			messages, err := adapter.FetchHistoricalMessages(channelId)
+			if err != nil {
+				return err
+			}
 
-		}
-		messages, err := adapter.FetchHistoricalMessages(channelId)
-		if err != nil {
-			return err
-		}
+			platformName := adapter.GetPlatformName()
 
-		platformName := adapter.GetPlatformName()
-
-		// Print messages for illustration.
-		for _, msg := range messages {
-			log.Printf("%v | %v | %v", platformName, channelId, msg)
+			// Print messages for illustration.
+			for _, msg := range messages {
+				log.Printf("%v | %v | %v", platformName, channelId, msg)
+			}
 		}
 
 		// TODO: Add your logic of storing messages.
@@ -62,6 +61,5 @@ func (m minerService) StreamLiveMessages(platformName string, channelId string) 
 }
 
 func (m minerService) StopStreaming(platformName string, channelId string) {
-	//TODO implement me
-	panic("implement me")
+	m.adapters[platformName].StopStreaming(channelId)
 }
