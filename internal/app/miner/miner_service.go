@@ -2,6 +2,7 @@ package miner
 
 import (
 	"GoMsgMiner/internal/app/port"
+	"fmt"
 	"log"
 )
 
@@ -45,7 +46,19 @@ func (m minerService) FetchAndStoreMessages(platformName string, channelId strin
 }
 
 func (m minerService) StreamLiveMessages(platformName string, channelId string) {
-	m.adapters[platformName].StreamLiveMessages(channelId)
+	messageChan, errorChan := m.adapters[platformName].StreamLiveMessages(channelId)
+
+	go func() {
+		for msg := range messageChan {
+			fmt.Printf("%s | %s | %s: %s\n", msg.Platform, msg.Channel, msg.UserName, msg.Message)
+		}
+	}()
+
+	go func() {
+		for err := range errorChan {
+			fmt.Printf("Error occurred: %s\n", err)
+		}
+	}()
 }
 
 func (m minerService) StopStreaming(platformName string, channelId string) {
