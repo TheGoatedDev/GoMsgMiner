@@ -24,5 +24,7 @@ func main() {
 
 	minerService.StreamLiveMessages("Twitch", "Emiru")
 
+	minerService.StreamLiveMessages("Twitch", "PirateSoftware")
+
 	<-stop
 }
