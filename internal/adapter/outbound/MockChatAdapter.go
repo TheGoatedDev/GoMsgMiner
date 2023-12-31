@@ -35,6 +35,7 @@ func (m *MockChatAdapter) StreamLiveMessages(channelID string) (<-chan port.Chat
 	go func() {
 		for {
 			messageChan <- port.ChatMessage{Message: "Message"}
+			time.Sleep(time.Second)
 		}
 	}()
 
