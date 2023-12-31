@@ -29,8 +29,16 @@ func (m *MockChatAdapter) FetchHistoricalMessages(channelID string) ([]port.Chat
 }
 
 func (m *MockChatAdapter) StreamLiveMessages(channelID string) (<-chan port.ChatMessage, <-chan error) {
-	// For simplicity, we are not streaming live messages in the mock adapter
-	return nil, nil
+
+	messageChan := make(chan port.ChatMessage)
+
+	go func() {
+		for {
+			messageChan <- port.ChatMessage{Message: "Message"}
+		}
+	}()
+
+	return messageChan, nil
 }
 
 func (m *MockChatAdapter) StopStreaming(channelID string) {
