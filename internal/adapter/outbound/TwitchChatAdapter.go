@@ -4,6 +4,7 @@ import (
 	"GoMsgMiner/internal/app/port"
 	"fmt"
 	"github.com/gempir/go-twitch-irc/v2"
+	"time"
 )
 
 type TwitchChatAdapter struct {
@@ -42,14 +43,29 @@ func (m *TwitchChatAdapter) FetchHistoricalMessages(channelID string) ([]port.Ch
 
 func (m *TwitchChatAdapter) StreamLiveMessages(channelID string) (<-chan port.ChatMessage, <-chan error) {
 	// Use
+	messageChan := make(chan port.ChatMessage)
+	errorChan := make(chan error)
 
 	m.twitchClient.OnPrivateMessage(func(message twitch.PrivateMessage) {
-		fmt.Printf("%s | %s | %s\n", message.Channel, message.User.DisplayName, message.Message)
+		chatMessage := port.ChatMessage{
+			Channel: message.Channel,
+
+			UserName: message.User.DisplayName,
+			UserID:   message.User.ID,
+
+			Message:  message.Message,
+			Platform: m.GetPlatformName(),
+
+			Timestamp: time.Now().Unix(),
+		}
+
+		// Send the ChatMessage struct through the message channel
+		messageChan <- chatMessage
 	})
 
 	m.twitchClient.Join(channelID)
 
-	return nil, nil
+	return messageChan, errorChan
 }
 
 func (m *TwitchChatAdapter) StopStreaming(channelID string) {
