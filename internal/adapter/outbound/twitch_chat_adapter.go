@@ -1,7 +1,7 @@
 package outbound
 
 import (
-	"GoMsgMiner/internal/app/port"
+	"GoMsgMiner/internal/domain"
 	"fmt"
 	"github.com/gempir/go-twitch-irc/v2"
 	"time"
@@ -35,19 +35,13 @@ func NewTwitchChatAdapter() *TwitchChatAdapter {
 	}
 }
 
-func (m *TwitchChatAdapter) FetchHistoricalMessages(channelID string) ([]port.ChatMessage, error) {
-
-	// Return a slice containing a single mock message
-	return []port.ChatMessage{}, nil
-}
-
-func (m *TwitchChatAdapter) StreamLiveMessages(channelID string) (<-chan port.ChatMessage, <-chan error) {
+func (m *TwitchChatAdapter) StreamLiveMessages(channelID string) (<-chan domain.ChatMessage, <-chan error) {
 	// Use
-	messageChan := make(chan port.ChatMessage)
+	messageChan := make(chan domain.ChatMessage)
 	errorChan := make(chan error)
 
 	m.twitchClient.OnPrivateMessage(func(message twitch.PrivateMessage) {
-		chatMessage := port.ChatMessage{
+		chatMessage := domain.ChatMessage{
 			Channel: message.Channel,
 
 			UserName: message.User.DisplayName,

@@ -1,18 +1,9 @@
 package port
 
-type ChatMessage struct {
-	UserID    string
-	UserName  string
-	Platform  string
-	Channel   string
-	Message   string
-	Timestamp int64 // Unix timestamp
-
-}
+import "GoMsgMiner/internal/domain"
 
 type LiveChatServicePort interface {
 	GetPlatformName() string
-	FetchHistoricalMessages(channelID string) ([]ChatMessage, error)
-	StreamLiveMessages(channelID string) (<-chan ChatMessage, <-chan error)
+	StreamLiveMessages(channelID string) (<-chan domain.ChatMessage, <-chan error)
 	StopStreaming(channelID string)
 }
