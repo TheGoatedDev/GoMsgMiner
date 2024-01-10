@@ -2,7 +2,6 @@ package outbound
 
 import (
 	"GoMsgMiner/internal/domain"
-	"fmt"
 	"time"
 )
 
@@ -16,25 +15,16 @@ func NewMockChatAdapter() *MockChatAdapter {
 	return &MockChatAdapter{}
 }
 
-func (m *MockChatAdapter) FetchHistoricalMessages(channelID string) ([]domain.ChatMessage, error) {
-	msg := domain.ChatMessage{
-		UserID:    "123",
-		UserName:  "mock_user",
-		Message:   fmt.Sprintf("This is a mock message from channel: %s", channelID),
-		Timestamp: time.Now().Unix(),
-	}
-
-	// Return a slice containing a single mock message
-	return []domain.ChatMessage{msg}, nil
-}
-
 func (m *MockChatAdapter) StreamLiveMessages(channelID string) (<-chan domain.ChatMessage, <-chan error) {
 
 	messageChan := make(chan domain.ChatMessage)
 
 	go func() {
 		for {
-			messageChan <- domain.ChatMessage{Message: "Message"}
+			messageChan <- domain.ChatMessage{
+				Message: "Message",
+				Channel: channelID,
+			}
 			time.Sleep(time.Second)
 		}
 	}()
