@@ -23,7 +23,7 @@ func NewMinerService(adapters ...port.LiveChatServicePort) Miner {
 }
 
 func (m minerService) StreamLiveMessages(platformName string, channelId string) {
-	fmt.Printf("Started Streaming on %s for %s", platformName, channelId)
+	fmt.Printf("Started Streaming on %s for %s\n", platformName, channelId)
 
 	messageChan, errorChan := m.adapters[platformName].StreamLiveMessages(channelId)
 
