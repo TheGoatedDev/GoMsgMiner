@@ -19,11 +19,8 @@ func main() {
 	minerService := miner.NewMinerService(twitchAdapter)
 
 	minerService.StreamLiveMessages("Twitch", "Sweet_Anita")
-
 	minerService.StreamLiveMessages("Twitch", "vedal987")
-
 	minerService.StreamLiveMessages("Twitch", "Emiru")
-
 	minerService.StreamLiveMessages("Twitch", "PirateSoftware")
 
 	<-stop
