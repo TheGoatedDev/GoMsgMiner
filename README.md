@@ -1,4 +1,4 @@
-# GoMsgMinger
+# GoMsgMiner
 
 ## Introduction
 
