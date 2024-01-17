@@ -9,19 +9,24 @@ import (
 )
 
 func main() {
-	stop := make(chan os.Signal, 1)
-	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 
 	// Initialize the TwitchChatAdapter
 	twitchAdapter := outbound.NewTwitchChatAdapter()
 
-	// Initialize the miner service with the TwitchChatAdapter
+	// Initialize the MockChatAdapter
+	// mockAdapter := outbound.NewMockChatAdapter()
+
+	// Initialize the miner service with the Adapters
 	minerService := miner.NewMinerService(twitchAdapter)
 
-	minerService.StreamLiveMessages("Twitch", "Sweet_Anita")
 	minerService.StreamLiveMessages("Twitch", "vedal987")
-	minerService.StreamLiveMessages("Twitch", "Emiru")
 	minerService.StreamLiveMessages("Twitch", "PirateSoftware")
+	minerService.StreamLiveMessages("Twitch", "ThePrimeagen")
 
+	//minerService.StreamLiveMessages("Mock Chat", "Mock Channel 1")
+
+	// Wait for a SIGINT or SIGTERM signal
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 	<-stop
 }
